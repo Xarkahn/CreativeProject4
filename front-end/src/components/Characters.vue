@@ -57,6 +57,7 @@
             </tbody>
         </table>
     </div>
+    <br>
     <router-link tag="button" class="pure-button pure-button-primary" to="/Character-Creation-1">
         <span>New Character </span>
         <i class="far fa-plus-square"></i>

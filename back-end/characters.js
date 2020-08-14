@@ -69,7 +69,7 @@ router.get('/:name', validUser, async (req, res) => {
       let character = await Character.findOne({
         name: req.params.name
       });
-      if (req.user.role !== "GM" && character.user !== req.user){
+      if (req.user.role !== "GM" && character.user.toString() != req.user._id){
         return res.sendStatus(403);
       }
       return res.send({

@@ -26,7 +26,7 @@
           :class="{ 'armor-check': skill.armorCheck }"
           :key="skill.name"
         >
-          <td v-if="isClassSkill(skill)">
+          <td v-if="isClassSkill(skill.name)">
             &#9724;
           </td>
           <td v-else>
@@ -110,7 +110,7 @@ export default {
     isClassSkill(skill) {
       return (
         this.character.class.skills.findIndex(
-          name => name == skill.name
+          name => name.toLowerCase() == skill.toLowerCase()
         ) >= 0
       );
     },
