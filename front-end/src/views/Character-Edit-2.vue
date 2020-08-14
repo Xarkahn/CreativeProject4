@@ -1,16 +1,16 @@
 <template>
   <body>
-    <form id="page2" @submit.prevent="createCharacter()">
+    <form id="page2" @submit.prevent="editCharacter()">
       <div>
         <h1>Skill Point Allocation</h1>
       </div>
       <div class="table-header">
         <h2>
-          Max Ranks (Class Skill): {{ $root.$data.newCharacter.level + 3 }}
+          Max Ranks (Class Skill): {{ newCharacter.level + 3 }}
         </h2>
         <h2>
           Max Ranks (Cross-Class Skill):
-          {{ ($root.$data.newCharacter.level + 3) / 2 }}
+          {{ (newCharacter.level + 3) / 2 }}
         </h2>
       </div>
       <table class="skillallocation">
@@ -29,8 +29,8 @@
             <th>Ranks</th>
           </tr>
         </thead>
-        <tr v-for="skill in skills" :key="skill.name">
-          <td v-if="isClassSkill(skill)">
+        <tr v-for="(skill, index) of skills" :key="skill._id">
+          <td v-if="isClassSkill(skill.name)">
             &#9724;
           </td>
           <td v-else>&#9723;</td>
@@ -39,9 +39,9 @@
             <p>
               {{
                 abilityModifier(
-                  $root.$data.newCharacter.abilities[skill.ability]
+                  newCharacter.abilities[skill.ability]
                 ) +
-                  $root.$data.newCharacter.skills[skill.name.replace(/ /g, "_")]
+                  newCharacter.skills[index].ranks
               }}
             </p>
           </td>
@@ -49,24 +49,24 @@
             <input
               type="number"
               min="0"
-              :id="skill"
+              :id="skill.name"
               :max="[
-                isClassSkill(skill)
-                  ? $root.$data.newCharacter.level + 3
-                  : ($root.$data.newCharacter.level + 3) / 2
+                isClassSkill(skill.name)
+                  ? newCharacter.level + 3
+                  : (newCharacter.level + 3) / 2
               ]"
               v-model.number="
-                $root.$data.newCharacter.skills[skill.name.replace(/ /g, '_')]
+                newCharacter.skills[index].ranks
               "
             />
           </td>
         </tr>
         <tr>
           <td colspan="4" style="border-right: 1px solid black;">
-            <p id="error" v-if="extraPoints">Too Many Points Spent</p>
+            <div id="error" v-if="extraPoints">Too Many Points Spent</div>
             <button type="submit" style="width: 100%; margin: 1em 0;">
               Complete Character
-              <img src="@/assets/PersonPlus.svg" />
+              <i class="fas fa-user-plus"></i>
             </button>
           </td>
         </tr>
@@ -78,114 +78,100 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: "CharacterCreation2",
-  data: () => {
+  data() {
     return {
-      extraPoints: false
-    };
+      newCharacter: {},
+      skills: [],
+      charaClass: []
+    }
   },
   computed: {
-    skills() {
-      return this.$root.$data.skills;
-    },
-    classes() {
-      return this.$root.$data.classes;
-    },
-    species() {
-      return this.$root.$data.species;
-    },
     pointsRemaining() {
       let totalSpent = 0;
+      let index = 0;
       Array.prototype.forEach.call(this.skills, skill => {
-        if (this.isClassSkill(skill)) {
-          totalSpent += this.$root.$data.newCharacter.skills[
-            skill.name.replace(/ /g, "_")
-          ];
+        if (this.isClassSkill(skill.name)) {
+          totalSpent += this.newCharacter.skills[index].ranks;
         } else
           totalSpent +=
             2 *
-            this.$root.$data.newCharacter.skills[skill.name.replace(/ /g, "_")];
+            this.newCharacter.skills[index].ranks;
+        index++;
       });
       return (
-        (this.classes[this.$root.$data.newCharacter.class].skill_points +
-          this.abilityModifier(this.$root.$data.newCharacter.abilities.int)) *
-          (this.$root.$data.newCharacter.level + 3) -
+        (this.charaClass.skill_points +
+          this.abilityModifier(this.newCharacter.abilities.int)) *
+          (this.newCharacter.level + 3) -
         totalSpent
       );
-    }
+    },
+    extraPoints() {
+      return this.pointsRemaining < 0;
+    },
+  },
+  async created() {
+    this.newCharacter = this.$route.params.character;
+    await this.getClass();
+    await this.getSkills();
   },
   methods: {
     abilityModifier(ability) {
       return Math.floor((ability - 10) / 2);
     },
-    createCharacter() {
+    async editCharacter() {
       if (this.pointsRemaining >= 0) {
-        this.$root.$data.characters.push(this.$root.$data.newCharacter);
+        await axios.put("/api/characters/" + this.newCharacter._id, {
+          name: this.newCharacter.name,
+          class: this.newCharacter.class,
+          level: this.newCharacter.level,
+          species: this.newCharacter.species,
+          alignment1: this.newCharacter.alignment1,
+          alignment2: this.newCharacter.alignment2,
+          age: this.newCharacter.age,
+          gender: this.newCharacter.gender,
+          height: this.newCharacter.height,
+          weight: this.newCharacter.weight,
+          eyes: this.newCharacter.eyes,
+          hair: this.newCharacter.hair,
+          skin: this.newCharacter.skin,
+          abilities: this.newCharacter.abilities,
+          skills: this.newCharacter.skills
+        })
         this.$router.push(
-          "/Character-Sheet/" + this.$root.$data.newCharacter.name
+          "/Character-Sheet/" + this.newCharacter.name
         );
-        return;
-      } else {
-        this.extraPoints = true;
         return;
       }
     },
     isClassSkill(skill) {
       return (
-        this.classes[this.$root.$data.newCharacter.class].skills.findIndex(
+        this.charaClass.skills.findIndex(
           classSkill => {
-            return classSkill == skill.name;
+            return classSkill.toLowerCase() == skill.toLowerCase();
           }
         ) >= 0
       );
-    }
-  },
-  created() {
-    if (this.$root.$data.newCharacter.name == undefined) {
-      this.$root.$data.newCharacter = {
-        name: "TEST",
-        class: "Barbarian",
-        level: 1,
-        species: "Human",
-        alignment1: "Neutral",
-        alignment2: "Neutral",
-        age: "20",
-        gender: "",
-        height: ``,
-        weight: "lb",
-        eyes: "",
-        hair: "",
-        skin: "",
-        abilities: { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 },
-        skills: {
-          Acrobatics: 0,
-          Athletics: 0,
-          Bluff: 0,
-          Craft: 0,
-          Concentration: 0,
-          Disable_Device: 0,
-          Diplomacy: 0,
-          Disguise: 0,
-          Handle_Animal: 0,
-          Heal: 0,
-          Intimidate: 0,
-          Knowledge: 0,
-          Linguistics: 0,
-          Lockpicking: 0,
-          Perception: 0,
-          Perform: 0,
-          Persuade: 0,
-          Profession: 0,
-          Ride: 0,
-          Sense_Motive: 0,
-          Sleight_of_Hand: 0,
-          Spellcraft: 0,
-          Stealth: 0,
-          Survival: 0,
-          Use_Magic_Device: 0
-        }
-      };
+    },
+    async getClass() {
+      try {
+        let response = await axios.get("/api/charaClasses/" + this.newCharacter.class._id);
+        this.charaClass = response.data.charaClass;
+        return true;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async getSkills() {
+      try {
+        let response = await axios.get("/api/skills");
+        this.skills = response.data.skills.reverse();
+        return true;
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 };
@@ -285,6 +271,7 @@ form th {
   padding-left: 0.5em;
   padding-right: 0.5em;
   white-space: nowrap;
+  text-transform: capitalize;
 }
 form td:first-child,
 form th:first-child {

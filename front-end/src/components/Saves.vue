@@ -33,7 +33,7 @@
           {{ getSave("Ref") + abilityModifier(character.abilities.dex) }}
         </p>
         <div class="header-spacer">=</div>
-        <p class="short">{{ getSave("Ref") }}</p>
+        <p class="short">{{ getSave("ref") }}</p>
         <div class="header-spacer">+</div>
         <p class="short">{{ abilityModifier(character.abilities.dex) }}</p>
         <div class="header-spacer">+</div>
@@ -50,7 +50,7 @@
           {{ getSave("Fort") + abilityModifier(character.abilities.con) }}
         </p>
         <div class="header-spacer">=</div>
-        <p class="short">{{ getSave("Fort") }}</p>
+        <p class="short">{{ getSave("fort") }}</p>
         <div class="header-spacer">+</div>
         <p class="short">{{ abilityModifier(character.abilities.con) }}</p>
         <div class="header-spacer">+</div>
@@ -67,7 +67,7 @@
           {{ getSave("Will") + abilityModifier(character.abilities.wis) }}
         </p>
         <div class="header-spacer">=</div>
-        <p class="short">{{ getSave("Will") }}</p>
+        <p class="short">{{ getSave("will") }}</p>
         <div class="header-spacer">+</div>
         <p class="short">{{ abilityModifier(character.abilities.wis) }}</p>
         <div class="header-spacer">+</div>
@@ -83,17 +83,11 @@
 export default {
   name: "saves",
   props: {
-    character: Object,
-    classes: Object
+    character: Object
   },
   methods: {
     getSave(save) {
-      if (
-        this.classes[this.character.class].saves.findIndex(
-          classSave => classSave == save
-        ) >= 0
-      )
-        return Math.floor(this.character.level / 3) * 2;
+      if (this.character.class.saves[save]) return Math.floor(this.character.level / 3) * 2;
       else return Math.floor(this.character.level / 3);
     },
     abilityModifier(ability) {

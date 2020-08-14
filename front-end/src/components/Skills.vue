@@ -22,7 +22,7 @@
       </thead>
       <tbody>
         <tr
-          v-for="skill in skills"
+          v-for="(skill, index) in skills"
           :class="{ 'armor-check': skill.armorCheck }"
           :key="skill.name"
         >
@@ -38,9 +38,9 @@
             <div>
               {{
                 Math.floor(
-                  character.skills[skill.name.replace(/ /g, "_")] +
                     modifier(character.abilities[skill.ability]) +
-                    0
+                    character.skills[index].ranks +
+                    character.skills[index].misc
                 )
               }}
             </div>
@@ -53,10 +53,10 @@
           </td>
           <td class="operator">+</td>
           <td class="mod">
-            <div>{{ character.skills[skill.name.replace(/ /g, "_")] }}</div>
+            <div>{{ character.skills[index].ranks }}</div>
           </td>
           <td class="operator">+</td>
-          <td class="mod"><div>0</div></td>
+          <td class="mod"><div>{{ character.skills[index].misc }}</div></td>
         </tr>
       </tbody>
       <caption>
@@ -85,21 +85,21 @@ export default {
   name: "skills",
   props: {
     skills: Array,
-    character: Object,
-    classes: Object
+    character: Object
   },
   computed: {
     pointsRemaining() {
       let totalSpent = 0;
-      Array.prototype.forEach.call(this.skills, skill => {
-        if (this.isClassSkill(skill)) {
-          totalSpent += this.character.skills[skill.name.replace(/ /g, "_")];
+      let index = 0;
+      for (const skill of this.skills) {
+        if (this.isClassSkill(skill.name)) {
+          totalSpent += this.character.skills[index];
         } else
           totalSpent +=
-            2 * this.character.skills[skill.name.replace(/ /g, "_")];
-      });
+            2 * this.character.skills[index];
+      };
       return (
-        (this.classes[this.character.class].skill_points +
+        (this.character.class.skill_points +
           this.modifier(this.character.abilities.int)) *
           (this.character.level + 3) -
         totalSpent
@@ -109,7 +109,7 @@ export default {
   methods: {
     isClassSkill(skill) {
       return (
-        this.classes[this.character.class].skills.findIndex(
+        this.character.class.skills.findIndex(
           name => name == skill.name
         ) >= 0
       );

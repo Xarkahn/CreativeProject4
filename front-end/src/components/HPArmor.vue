@@ -38,7 +38,7 @@
             {{
               10 +
                 abilityModifier(character.abilities.dex) +
-                sizeModifier(species[character.species].size)
+                sizeModifier(character.species.size)
             }}
           </p>
           <div class="header-spacer short">= 10 +</div>
@@ -49,7 +49,7 @@
           <p class="short">{{ abilityModifier(character.abilities.dex) }}</p>
           <div class="header-spacer">+</div>
           <p class="short">
-            {{ sizeModifier(species[character.species].size) }}
+            {{ sizeModifier(character.species.size) }}
           </p>
           <div class="header-spacer">+</div>
           <p class="short"></p>
@@ -115,7 +115,7 @@
             <h1 class="standard">speed</h1>
             <h2 class="standard">feet/round</h2>
           </div>
-          <p style="width:5em">{{ species[character.species].speed }}</p>
+          <p style="width:5em">{{ character.species.speed }}</p>
           <p style="width:5em"></p>
           <p style="width:5em"></p>
           <p style="width:5em"></p>
@@ -145,8 +145,6 @@ export default {
   name: "hparmor",
   props: {
     character: Object,
-    classes: Object,
-    species: Object
   },
   data() {
     return {
@@ -156,13 +154,15 @@ export default {
   },
   computed: {
     baseHP() {
-      return this.classes[this.character.class].hd;
-    }
+      return Math.floor(this.character.class.hd
+       + this.character.class.hd * (1/2) * (this.character.level - 1)
+        + this.abilityModifier(this.character.abilities.con) * this.character.level
+      );}
   },
   methods: {
     sizeModifier(size) {
       if (size == "medium") return 0;
-      if (size == "small") return -4;
+      if (size == "small") return 1;
       else return NaN;
     },
     abilityModifier(ability) {

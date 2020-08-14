@@ -13,21 +13,21 @@
             type="text"
             id="name"
             name="name"
-            v-model="$root.$data.newCharacter.name"
+            v-model="newCharacter.name"
         /></label>
         <label
           ><span>Species</span>
           <select
             id="species"
             name="species"
-            v-model="$root.$data.newCharacter.species"
+            v-model="newCharacter.species"
           >
             <option
-              v-for="option in Object.keys(species)"
+              v-for="option in species"
               :value="option"
-              :key="option"
+              :key="option.id"
             >
-              {{ option }}
+              {{ option.name }}
             </option>
           </select>
         </label>
@@ -36,14 +36,14 @@
           <select
             id="class"
             name="class"
-            v-model="$root.$data.newCharacter.class"
+            v-model="newCharacter.class"
           >
             <option
-              v-for="option in Object.keys(classes)"
+              v-for="option in charaClasses"
               :value="option"
-              :key="option"
+              :key="option.id"
             >
-              {{ option }}
+              {{ option.name }}
             </option>
           </select>
         </label>
@@ -55,14 +55,14 @@
             name="level"
             value="1"
             style="width: 3em;"
-            v-model.number="$root.$data.newCharacter.level"
+            v-model.number="newCharacter.level"
         /></label>
         <label
           ><span>Alignment</span>
           <select
             id="alignment1"
             name="alignment1"
-            v-model="$root.$data.newCharacter.alignment1"
+            v-model="newCharacter.alignment1"
           >
             <option value="Lawful">Lawful</option>
             <option value="Neutral">Neutral</option>
@@ -71,7 +71,7 @@
           <select
             id="alignment2"
             name="alignment2"
-            v-model="$root.$data.newCharacter.alignment2"
+            v-model="newCharacter.alignment2"
           >
             <option value="Good">Good</option>
             <option value="Neutral">Neutral</option>
@@ -85,7 +85,7 @@
             id="age"
             name="age"
             style="width: 5em;"
-            v-model="$root.$data.newCharacter.age"
+            v-model="newCharacter.age"
         /></label>
         <label
           ><span>Gender</span
@@ -93,7 +93,7 @@
             type="text"
             id="gender"
             name="gender"
-            v-model="$root.$data.newCharacter.gender"
+            v-model="newCharacter.gender"
         /></label>
         <label
           ><span>Height</span
@@ -101,7 +101,7 @@
             type="text"
             id="height"
             name="height"
-            v-model="$root.$data.newCharacter.height"
+            v-model="newCharacter.height"
         /></label>
         <label
           ><span>Weight</span
@@ -109,7 +109,7 @@
             type="text"
             id="weight"
             name="weight"
-            v-model="$root.$data.newCharacter.weight"
+            v-model="newCharacter.weight"
         /></label>
         <label
           ><span>Eyes</span
@@ -117,7 +117,7 @@
             type="text"
             id="eyes"
             name="eyes"
-            v-model="$root.$data.newCharacter.eyes"
+            v-model="newCharacter.eyes"
         /></label>
         <label
           ><span>Hair</span
@@ -125,7 +125,7 @@
             type="text"
             id="hair"
             name="hair"
-            v-model="$root.$data.newCharacter.hair"
+            v-model="newCharacter.hair"
         /></label>
         <label
           ><span>Skin</span
@@ -133,7 +133,7 @@
             type="text"
             id="skin"
             name="skin"
-            v-model="$root.$data.newCharacter.skin"
+            v-model="newCharacter.skin"
         /></label>
       </div>
       <div id="abilities-header">
@@ -146,7 +146,7 @@
           <caption
             style="caption-side: top; text-align: center; color: black; padding: 0"
           >
-            Click and Drag to Rearrange
+            Drag to Rearrange
           </caption>
           <tr>
             <td>Strength</td>
@@ -156,21 +156,8 @@
               v-on:drop="dropItem('str')"
               v-on:dragover.prevent
             >
-              <div>
-                {{ $root.$data.newCharacter.abilities.str
-                }}<svg
-                  width="1em"
-                  height="1em"
-                  viewBox="0 0 16 16"
-                  class="bi bi-grip-horizontal"
-                  fill="currentColor"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"
-                  />
-                </svg>
-              </div>
+                {{ newCharacter.abilities.str }}
+                <i class="fas fa-grip-vertical"></i>
             </td>
           </tr>
           <tr>
@@ -181,21 +168,8 @@
               v-on:drop="dropItem('dex')"
               v-on:dragover.prevent
             >
-              <div>
-                {{ $root.$data.newCharacter.abilities.dex
-                }}<svg
-                  width="1em"
-                  height="1em"
-                  viewBox="0 0 16 16"
-                  class="bi bi-grip-horizontal"
-                  fill="currentColor"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"
-                  />
-                </svg>
-              </div>
+                {{ newCharacter.abilities.dex }}
+                <i class="fas fa-grip-vertical"></i>
             </td>
           </tr>
           <tr>
@@ -205,22 +179,9 @@
               v-on:dragstart="dragItem('con')"
               v-on:drop="dropItem('con')"
               v-on:dragover.prevent
-            >
-              <div>
-                {{ $root.$data.newCharacter.abilities.con
-                }}<svg
-                  width="1em"
-                  height="1em"
-                  viewBox="0 0 16 16"
-                  class="bi bi-grip-horizontal"
-                  fill="currentColor"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"
-                  />
-                </svg>
-              </div>
+              >
+                {{ newCharacter.abilities.con }}
+                <i class="fas fa-grip-vertical"></i>
             </td>
           </tr>
           <tr>
@@ -231,21 +192,8 @@
               v-on:drop="dropItem('int')"
               v-on:dragover.prevent
             >
-              <div>
-                {{ $root.$data.newCharacter.abilities.int
-                }}<svg
-                  width="1em"
-                  height="1em"
-                  viewBox="0 0 16 16"
-                  class="bi bi-grip-horizontal"
-                  fill="currentColor"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"
-                  />
-                </svg>
-              </div>
+                {{ newCharacter.abilities.int }}
+                <i class="fas fa-grip-vertical"></i>
             </td>
           </tr>
           <tr>
@@ -256,21 +204,8 @@
               v-on:drop="dropItem('wis')"
               v-on:dragover.prevent
             >
-              <div>
-                {{ $root.$data.newCharacter.abilities.wis
-                }}<svg
-                  width="1em"
-                  height="1em"
-                  viewBox="0 0 16 16"
-                  class="bi bi-grip-horizontal"
-                  fill="currentColor"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"
-                  />
-                </svg>
-              </div>
+                {{ newCharacter.abilities.wis }}
+                <i class="fas fa-grip-vertical"></i>
             </td>
           </tr>
           <tr>
@@ -281,21 +216,8 @@
               v-on:drop="dropItem('cha')"
               v-on:dragover.prevent
             >
-              <div>
-                {{ $root.$data.newCharacter.abilities.cha
-                }}<svg
-                  width="1em"
-                  height="1em"
-                  viewBox="0 0 16 16"
-                  class="bi bi-grip-horizontal"
-                  fill="currentColor"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"
-                  />
-                </svg>
-              </div>
+              {{ newCharacter.abilities.cha }}
+              <i class="fas fa-grip-vertical"></i>
             </td>
           </tr>
         </table>
@@ -307,19 +229,18 @@
         <p>Rerolls Remaining: {{ rollsRemaining }}</p>
         <p
           class="error"
-          v-if="$root.$data.newCharacter.name.length == 0"
+          v-if="newCharacter.name.length == 0"
           style="max-width: 153px"
         >
           Enter a Name to Continue
         </p>
-        <router-link
-          v-if="$root.$data.newCharacter.name.length != 0"
-          tag="button"
-          to="/Character-Creation-2"
+        <button
+          v-if="newCharacter.name.length != 0"
+          @click.prevent="next()"
           style="margin-bottom: 2em;"
         >
           Continue
-        </router-link>
+        </button>
       </div>
     </form>
   </body>
@@ -327,75 +248,29 @@
 
 <script>
 import Vue from "vue";
+import axios from 'axios';
 export default {
   name: "CharacterCreation1",
-  created() {
-    this.$root.$data.newCharacter = {
-      name: "",
-      class: "Barbarian",
-      level: 1,
-      species: "Human",
-      alignment1: "Neutral",
-      alignment2: "Neutral",
-      age: "20",
-      gender: "",
-      height: ``,
-      weight: "lb",
-      eyes: "",
-      hair: "",
-      skin: "",
-      abilities: { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 },
-      skills: {
-        Acrobatics: 0,
-        Athletics: 0,
-        Bluff: 0,
-        Craft: 0,
-        Concentration: 0,
-        Disable_Device: 0,
-        Diplomacy: 0,
-        Disguise: 0,
-        Handle_Animal: 0,
-        Heal: 0,
-        Intimidate: 0,
-        Knowledge: 0,
-        Linguistics: 0,
-        Lockpicking: 0,
-        Perception: 0,
-        Perform: 0,
-        Persuade: 0,
-        Profession: 0,
-        Ride: 0,
-        Sense_Motive: 0,
-        Sleight_of_Hand: 0,
-        Spellcraft: 0,
-        Stealth: 0,
-        Survival: 0,
-        Use_Magic_Device: 0
-      }
-    };
-    this.rollAbilities();
+  async created() {
+    await this.getClasses();
+    await this.getSpecies();
+    this.newCharacter = this.$route.params.character;
   },
   data: () => {
     return {
       rollsRemaining: 5,
       extraRolls: false,
-      drag: {}
+      drag: {},
+
+      charaClasses: [],
+      species: [],
+
+      newCharacter: {}
     };
-  },
-  computed: {
-    skills() {
-      return this.$root.$data.skills;
-    },
-    classes() {
-      return this.$root.$data.classes;
-    },
-    species() {
-      return this.$root.$data.species;
-    }
   },
   methods: {
     rollAbilities() {
-      Object.keys(this.$root.$data.newCharacter.abilities).forEach(ability => {
+      Object.keys(this.newCharacter.abilities).forEach(ability => {
         let rolls = [];
         for (let i = 0; i < 4; i++) {
           let roll = Math.round(Math.random() * 5 + 1);
@@ -407,7 +282,7 @@ export default {
         let total = rolls.pop();
         total += rolls.pop();
         total += rolls.pop();
-        this.$root.$data.newCharacter.abilities[ability] = total;
+        this.newCharacter.abilities[ability] = total;
       });
       return;
     },
@@ -426,10 +301,36 @@ export default {
       this.drag = ability;
     },
     dropItem(ability) {
-      const fromValue = this.$root.$data.newCharacter.abilities[this.drag];
-      const toValue = this.$root.$data.newCharacter.abilities[ability];
-      Vue.set(this.$root.$data.newCharacter.abilities, ability, fromValue);
-      Vue.set(this.$root.$data.newCharacter.abilities, this.drag, toValue);
+      const fromValue = this.newCharacter.abilities[this.drag];
+      const toValue = this.newCharacter.abilities[ability];
+      Vue.set(this.newCharacter.abilities, ability, fromValue);
+      Vue.set(this.newCharacter.abilities, this.drag, toValue);
+    },
+    async getClasses() {
+      try {
+        let response = await axios.get("/api/charaClasses");
+        this.charaClasses = response.data.charaClasses;
+        this.newCharacter.class = this.charaClasses[0];
+        return true;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async getSpecies() {
+      try {
+        let response = await axios.get("/api/species");
+        this.species = response.data.species;
+        this.newCharacter.species = this.species[0];
+        return true;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    next() {
+      this.$router.push( {
+        name: "Character-Edit-2", params: { character: this.newCharacter }
+      });
+      return;
     }
   }
 };
@@ -544,9 +445,6 @@ form .abilities tr,
 form .abilities td {
   border: 1px groove black;
 }
-form .abilities td {
-  width: 3em;
-}
 td[draggable="true"]:hover {
   cursor: grab;
 }
@@ -555,17 +453,10 @@ td[draggable="true"]:-moz-drag-over {
 }
 td[draggable="true"] {
   position: relative;
+  padding-right: 4px;
+  text-align: right;
 }
-td[draggable="true"] div {
-  position: relative;
-  display: block;
-}
-td[draggable="true"] div svg {
-  display: block;
-  position: absolute;
-  right: -5px;
-  top: 4px;
-  margin: 0;
-  padding: 0;
+select {
+  text-transform: capitalize;
 }
 </style>

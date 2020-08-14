@@ -26,7 +26,7 @@
           {{
             highAttackBonus +
               abilityModifier(character.abilities.str) +
-              sizeModifier(species[character.species].size)
+              sizeModifier(character.species.size)
           }}
         </p>
         <div class="header-spacer">=</div>
@@ -34,7 +34,7 @@
         <div class="header-spacer">+</div>
         <p class="short">{{ abilityModifier(character.abilities.str) }}</p>
         <div class="header-spacer">+</div>
-        <p class="short">{{ sizeModifier(species[character.species].size) }}</p>
+        <p class="short">{{ sizeModifier(character.species.size)*-4 }}</p>
         <div class="header-spacer">+</div>
         <p class="short"></p>
       </div>
@@ -105,14 +105,12 @@
 export default {
   name: "attacks",
   props: {
-    character: Object,
-    classes: Object,
-    species: Object
+    character: Object
   },
   computed: {
     fullAttackBonus() {
       let bonus =
-        this.classes[this.character.class].attack * this.character.level;
+        Math.floor(this.character.class.attack * this.character.level);
       let toReturn = "+" + bonus;
       bonus -= 5;
       while (bonus > 0) {
@@ -122,7 +120,7 @@ export default {
       return toReturn;
     },
     highAttackBonus() {
-      return this.classes[this.character.class].attack * this.character.level;
+      return Math.floor(this.character.class.attack * this.character.level);
     }
   },
   methods: {
@@ -131,7 +129,7 @@ export default {
     },
     sizeModifier(size) {
       if (size == "medium") return 0;
-      if (size == "small") return -4;
+      if (size == "small") return 1;
       else return NaN;
     }
   }

@@ -10,7 +10,7 @@ vue/return-in-computed-property */
         </div>
 
         <div class="standard">
-          <h3>{{ character.class }}</h3>
+          <h3>{{ character.class.name }}</h3>
           <h4>CLASS</h4>
         </div>
 
@@ -20,7 +20,7 @@ vue/return-in-computed-property */
         </div>
 
         <div class="standard">
-          <h3>{{ character.species }}</h3>
+          <h3>{{ character.species.name }}</h3>
           <h4>SPECIES</h4>
         </div>
 
@@ -30,7 +30,7 @@ vue/return-in-computed-property */
         </div>
 
         <div class="standard">
-          <h3>{{ this.$root.$data.species[character.species].size }}</h3>
+          <h3>{{ character.species.size }}</h3>
           <h4>SIZE</h4>
         </div>
 
@@ -70,34 +70,22 @@ vue/return-in-computed-property */
         </div>
       </div>
       <div class="top-row">
-        <abilities :character="this.character"> </abilities>
-        <hparmor
-          :character="this.character"
-          :classes="this.classes"
-          :species="this.species"
-        >
-        </hparmor>
+        <abilities :character="character"></abilities>
+        <hparmor :character="character"></hparmor>
       </div>
       <div class="bottom-row">
         <div class="bottom-row-left">
-          <saves :character="this.character" :classes="this.classes"></saves>
-          <attacks
-            :character="this.character"
-            :classes="this.classes"
-            :species="this.species"
-          ></attacks>
+          <saves :character="character"></saves>
+          <attacks :character="character"></attacks>
         </div>
-        <skills
-          :skills="this.skills"
-          :character="this.character"
-          :classes="this.classes"
-        ></skills>
+        <skills :character="character" :skills="skills"></skills>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 import abilities from "@/components/Abilities.vue";
 import hparmor from "@/components/HPArmor.vue";
 import saves from "@/components/Saves.vue";
@@ -112,25 +100,38 @@ export default {
     attacks,
     skills
   },
-  computed: {
-    character() {
-      return this.$root.$data.characters[
-        this.$root.$data.characters.findIndex(
-          chara => chara.name == this.$route.params.character
-        )
-      ];
-    },
-    skills() {
-      return this.$root.$data.skills;
-    },
-    classes() {
-      return this.$root.$data.classes;
-    },
-    species() {
-      return this.$root.$data.species;
+  data() {
+    return {
+      character: {},
+      skills: [],
+      charaClass: [],
+      species: []
     }
   },
-  methods: {}
+  async created() {
+    await this.getCharacter();
+    await this.getSkills();
+    await this.getClass(this.character.class._id);
+    await this.getSpecies();
+  },
+  methods: {
+    async getCharacter() {
+      let response = await axios.get("/api/characters/" + this.$route.params.character);
+      this.character = response.data.character;
+    },
+    async getSkills() {
+      let response = await axios.get("/api/skills" );
+      this.skills = response.data.skills.reverse();
+    },
+    async getClass(id) {
+      let response = await axios.get("/api/charaClasses/" + id);
+      this.charaClass = response.data.charaClass;
+    },
+    async getSpecies() {
+      let response = await axios.get("/api/species");
+      this.species = response.data.species.reverse();
+    }
+  }
 };
 </script>
 
@@ -152,7 +153,6 @@ export default {
   flex-wrap: wrap;
   font-weight: bold;
   max-width: 1035px;
-  max-height: 1340px;
 }
 .character-sheet h1,
 .character-sheet p,
@@ -247,6 +247,7 @@ export default {
 @media only screen AND (min-height: 1340px) {
   .wrapper {
     height: 100vh;
+    max-height: 1340px;
   }
 }
 @media print {

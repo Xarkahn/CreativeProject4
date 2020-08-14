@@ -1,34 +1,7 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link tag="button" to="/">Home</router-link>
-      <div class="dropdown">
-        <button class="dropdown-toggle" type="button" data-toggle="dropdown">
-          Characters <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu">
-          <li
-            v-for="character in this.$root.$data.characters"
-            :key="character.name"
-          >
-            <router-link
-              class="dropdown-option"
-              :to="{
-                name: 'Character-Sheet',
-                params: { character: character.name }
-              }"
-            >
-              <span>{{ character.name }}</span>
-            </router-link>
-          </li>
-          <li>
-            <router-link class="dropdown-option" to="/Character-Creation-1">
-              <span>New Character </span>
-              <img src="@/assets/Plus-square.svg" />
-            </router-link>
-          </li>
-        </ul>
-      </div>
+      <router-link tag="button" to="/">Characters</router-link>
       <div class="dropdown">
         <button class="dropdown-toggle" type="button" data-toggle="dropdown">
           Spells <span class="caret"></span>
@@ -41,13 +14,31 @@
           </li>
         </ul>
       </div>
+      <div id="logout"><button class="pure-button pure-button-primary" @click="logout()">Logout</button></div>
     </div>
     <router-view />
     <div class="footer">
-      <a href="https://github.com/Xarkahn/CreativeProject3">Repository</a>
+      <a href="https://github.com/Xarkahn/CreativeProject4">Repository</a>
     </div>
   </div>
 </template>
+
+<script>
+import axios from 'axios'
+export default {
+  name: 'app',
+  methods: {
+    async logout() {
+      try {
+        await axios.delete("/api/users");
+        this.$root.$data.user = null;
+      } catch (error) {
+        this.$root.$data.user = null;
+      }
+    },
+  }
+}
+</script>
 
 <style>
 :root {
@@ -56,7 +47,12 @@
   --accent-color: rgb(81, 62, 67);
   --accent-color-pale: rgb(231, 216, 216);
 }
+.pure-button-primary {
+  background-color: var(--header-color);
+}
+</style>
 
+<style scoped>
 body {
   margin: 0;
 }
@@ -75,7 +71,6 @@ body {
   background-color: var(--header-color);
   padding: 15px 30px;
   display: flex;
-  flex-direction: row;
 }
 
 .router-link-exact-active {
@@ -121,5 +116,11 @@ a:hover {
   background-color: var(--header-color);
   width: 100%;
   text-align: center;
+}
+
+#logout {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
 }
 </style>
