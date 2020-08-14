@@ -118,7 +118,7 @@ router.put('/:id', validUser, async (req, res) => {
       character = await Character.findOne({
         _id: req.params.id
       });
-      if (req.user.role !== "GM" && character.user !== req.user){
+      if (req.user.role !== "GM" && character.user.toString() != req.user._id){
         return res.sendStatus(403);
       }
       character.name = req.body.name,
