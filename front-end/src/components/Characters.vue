@@ -88,6 +88,7 @@ export default {
         if (confirm('Are you sure you want to delete ' + chara.name + '?')) {
             await axios.delete('/api/characters/' + chara._id)
         }
+        this.$forceUpdate();
     }
   }
 }
